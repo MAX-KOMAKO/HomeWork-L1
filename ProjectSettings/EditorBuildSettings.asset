@@ -6,15 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/HomeWork L1/Scenes/0_GameEntryPoint.unity
+    path: Assets/_Project/Scenes/0_GameEntryPoint.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/HomeWork L1/Scenes/1_Empty.unity
+    path: Assets/_Project/Scenes/1_Empty.unity
     guid: a227dd6b07baf4131a56611a12bcda0d
   - enabled: 1
-    path: Assets/HomeWork L1/Scenes/2_MainMenu.unity
+    path: Assets/_Project/Scenes/2_MainMenu.unity
     guid: 68ab878d0bfba4505b4ac65b0d311c96
   - enabled: 1
-    path: Assets/HomeWork L1/Scenes/3_Gameplay.unity
+    path: Assets/_Project/Scenes/3_Gameplay.unity
     guid: 6e4902616bb3d45f184b7f3b626136b0
   m_configObjects: {}
