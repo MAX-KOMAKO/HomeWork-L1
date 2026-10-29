@@ -6,7 +6,7 @@ using _Project.Develop.Utilities.Utilities;
 
 namespace _Project.Develop.Runtime.Gameplay.Features
 {
-    public class GameplayViewController : IDisposable
+    public class GameEndService : IDisposable
     {
         private readonly GameplayService _gameplayService;
         private readonly IInputService _inputService;
@@ -18,7 +18,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features
         private bool _isVictory;
         private bool _isLoading;
 
-        public GameplayViewController(
+        public GameEndService(
             GameplayService gameplayService,
             IInputService inputService,
             SceneSwitcherService sceneSwitcher,

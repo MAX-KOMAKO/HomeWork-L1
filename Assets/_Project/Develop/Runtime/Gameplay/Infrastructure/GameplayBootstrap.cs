@@ -20,7 +20,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private IInputService _inputService;
         private GameModeConfig _currentConfig;
 
-        private GameplayViewController _viewController;
+        private GameEndService _gameEndService;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -65,7 +65,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         public override void Run()
         {
-            _viewController = new GameplayViewController(
+            _gameEndService = new GameEndService(
                 _gameplayService,
                 _inputService,
                 _sceneSwitcher,
@@ -78,12 +78,12 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         private void Update()
         {
-            _viewController?.Update();
+            _gameEndService?.Update();
         }
 
         private void OnDestroy()
         {
-            _viewController?.Dispose();
+            _gameEndService?.Dispose();
         }
     }
 }
