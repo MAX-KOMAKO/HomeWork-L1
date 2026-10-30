@@ -36,7 +36,7 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             
             container.RegisterAsSingle(CreatePlayerDataProvider);
             container.RegisterAsSingle(CreateWalletService);
-            container.RegisterAsSingle(c => new StatsService()).NonLazy();
+            container.RegisterAsSingle(c => new StatsService());
         }
 
         private static ResourcesAssetsLoader CreateResourcesAssetsLoader(DIContainer c) => new ResourcesAssetsLoader();

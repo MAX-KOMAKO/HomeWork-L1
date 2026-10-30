@@ -6,9 +6,11 @@ namespace _Project.Develop.Utilities.Save
 {
     public class DataKeysStorage : IDataKeysStorage
     {
+        private const string PlayerDataKey = "PlayerData.json";
+
         private readonly Dictionary<Type, string> _keys = new()
         {
-            { typeof(PlayerData), "PlayerData.json" }
+            { typeof(PlayerData), PlayerDataKey }
         };
 
         public string GetKeyFor<TData>() where TData : ISaveData

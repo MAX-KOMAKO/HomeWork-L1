@@ -1,3 +1,4 @@
+using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
 using _Project.Develop.Runtime.Gameplay.Features.Save;
 using _Project.Develop.Runtime.Gameplay.Features.Stats;
@@ -56,7 +57,7 @@ namespace _Project.Develop.Runtime.Meta.Features
 
             if (string.IsNullOrEmpty(input) == false)
             {
-                char character = input[0];
+                char character = char.ToLowerInvariant(input[0]);
 
                 if (character == DigitsModeKey)
                 {
@@ -95,15 +96,24 @@ namespace _Project.Develop.Runtime.Meta.Features
             
             if (_walletService.CanSpend(cost))
             {
-                _walletService.SpendGold(cost);
-                _statsService.ResetStats();
-                _coroutinesPerformer.StartPerform(_playerDataProvider.SaveAsync());
-                _consoleService.Log($"Прогресс сброшен! Списано {cost} золота.");
+                _isLoading = true;
+                _coroutinesPerformer.StartPerform(ResetProgressProcess(cost));
             }
             else
             {
                 _consoleService.Log($"Недостаточно золота для сброса. Требуется: {cost}, у вас: {_walletService.CurrentGold}");
             }
+        }
+
+        private IEnumerator ResetProgressProcess(int cost)
+        {
+            _walletService.SpendGold(cost);
+            _statsService.ResetStats();
+            
+            yield return _playerDataProvider.SaveAsync();
+            
+            _isLoading = false;
+            _consoleService.Log($"Прогресс сброшен! Списано {cost} золота.");
         }
     }
 }
