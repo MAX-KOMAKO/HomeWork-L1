@@ -1,7 +1,11 @@
+using _Project.Develop.Runtime.Gameplay.Features.Save;
+using _Project.Develop.Runtime.Gameplay.Features.Stats;
+using _Project.Develop.Runtime.Gameplay.Features.Wallet;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Input;
 using _Project.Develop.Utilities.ConfigsManagment;
 using _Project.Develop.Utilities.LoadingScreen;
+using _Project.Develop.Utilities.Save;
 using _Project.Develop.Utilities.SceneManagement;
 using _Project.Develop.Utilities.Utilities;
 using Object = UnityEngine.Object;
@@ -23,6 +27,16 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreateSceneLoaderService);
             container.RegisterAsSingle(CreateSceneSwitcherService);
             container.RegisterAsSingle<IInputService>(c => new UnityInputService());
+            container.RegisterAsSingle<IConsoleService>(c => new UnityConsoleService());
+
+            container.RegisterAsSingle<IDataSerializer>(c => new JsonDataSerializer());
+            container.RegisterAsSingle<IDataRepository>(c => new LocalFileDataRepository());
+            container.RegisterAsSingle<IDataKeysStorage>(c => new DataKeysStorage());
+            container.RegisterAsSingle(CreateSaveLoadService);
+            
+            container.RegisterAsSingle(CreatePlayerDataProvider);
+            container.RegisterAsSingle(CreateWalletService);
+            container.RegisterAsSingle(c => new StatsService()).NonLazy();
         }
 
         private static ResourcesAssetsLoader CreateResourcesAssetsLoader(DIContainer c) => new ResourcesAssetsLoader();
@@ -55,6 +69,29 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             SceneLoaderService sceneLoader = c.Resolve<SceneLoaderService>();
             ILoadingScreen loadingScreen = c.Resolve<ILoadingScreen>();
             return new SceneSwitcherService(sceneLoader, loadingScreen, c);
+        }
+
+        private static SaveLoadService CreateSaveLoadService(DIContainer c)
+        {
+            return new SaveLoadService(
+                c.Resolve<IDataSerializer>(),
+                c.Resolve<IDataRepository>(),
+                c.Resolve<IDataKeysStorage>()
+            );
+        }
+
+        private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
+        {
+            ConfigsProviderService configsProvider = c.Resolve<ConfigsProviderService>();
+            WalletConfig walletConfig = configsProvider.GetConfig<WalletConfig>();
+            return new PlayerDataProvider(c.Resolve<SaveLoadService>(), walletConfig);
+        }
+
+        private static WalletService CreateWalletService(DIContainer c)
+        {
+            ConfigsProviderService configsProvider = c.Resolve<ConfigsProviderService>();
+            WalletConfig walletConfig = configsProvider.GetConfig<WalletConfig>();
+            return new WalletService(walletConfig);
         }
     }
 }

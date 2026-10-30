@@ -5,11 +5,11 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
     public class GameplayInputArgs : IInputSceneArgs
     {
-        public GameplayInputArgs(GameMode mode)
+        public GameplayInputArgs(GameModes mode)
         {
             Mode = mode;
         }
 
-        public GameMode Mode { get; }
+        public GameModes Mode { get; }
     }
 }

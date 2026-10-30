@@ -7,9 +7,6 @@ namespace _Project.Develop.Runtime.Gameplay.Features
 {
     public class GameplayService
     {
-        private const string VictoryMessage = "Победа! Нажмите пробел для выхода в меню.";
-        private const string DefeatMessage = "Поражение! Нажмите пробел для перезапуска.";
-
         public event Action Victory;
         public event Action Defeat;
 
@@ -19,6 +16,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features
 
         private string _currentSequence;
         private int _currentIndex;
+        
         private bool _isGameActive;
 
         public GameplayService(
@@ -68,14 +66,12 @@ namespace _Project.Develop.Runtime.Gameplay.Features
                 if (_currentIndex >= _currentSequence.Length)
                 {
                     _isGameActive = false;
-                    _consoleService.Log(VictoryMessage);
                     Victory?.Invoke();
                 }
             }
             else
             {
                 _isGameActive = false;
-                _consoleService.Log(DefeatMessage);
                 Defeat?.Invoke();
             }
         }

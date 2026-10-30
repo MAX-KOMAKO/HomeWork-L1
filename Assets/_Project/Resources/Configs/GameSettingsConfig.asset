@@ -15,3 +15,5 @@ MonoBehaviour:
   <GameModes>k__BackingField:
   - {fileID: 11400000, guid: ea906efd59fb74e34a6e76bbb4af0147, type: 2}
   - {fileID: 11400000, guid: fe3f60ff6b49f48b4b64c245a1f6f538, type: 2}
+  <WalletConfig>k__BackingField: {fileID: 11400000, guid: 1c8256434073b4071b28441dbb03d3e0, type: 2}
+  <ResetProgressConfig>k__BackingField: {fileID: 11400000, guid: f8a54837348574cfa8e9de670d518a04, type: 2}

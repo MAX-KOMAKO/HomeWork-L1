@@ -3,7 +3,9 @@ guid: 3e0e5ba40973549e38cd4df93d3c16d0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - <WalletConfig>k__BackingField: {fileID: 11400000, guid: 1c8256434073b4071b28441dbb03d3e0, type: 2}
+  - <ResetProgressConfig>k__BackingField: {fileID: 11400000, guid: f8a54837348574cfa8e9de670d518a04, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
