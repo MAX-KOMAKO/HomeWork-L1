@@ -3,6 +3,7 @@ using _Project.Develop.Runtime.Gameplay.Features.Stats;
 using _Project.Develop.Runtime.Gameplay.Features.Wallet;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Input;
+using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Utilities.ConfigsManagment;
 using _Project.Develop.Utilities.LoadingScreen;
 using _Project.Develop.Utilities.Save;
@@ -37,6 +38,9 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreatePlayerDataProvider);
             container.RegisterAsSingle(CreateWalletService);
             container.RegisterAsSingle(c => new StatsService());
+
+            container.RegisterAsSingle<ViewsFactory>(c => new ViewsFactory(c.Resolve<ResourcesAssetsLoader>()));
+            container.RegisterAsSingle(c => new ProjectPresentersFactory(c));
         }
 
         private static ResourcesAssetsLoader CreateResourcesAssetsLoader(DIContainer c) => new ResourcesAssetsLoader();
