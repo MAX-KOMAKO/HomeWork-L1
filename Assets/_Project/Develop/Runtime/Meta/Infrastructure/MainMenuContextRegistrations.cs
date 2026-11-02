@@ -25,6 +25,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
                 c.Resolve<ConfigsProviderService>().GetConfig<ResetProgressConfig>()
             ));
 
+            container.RegisterAsSingle(c => new ProjectPresentersFactory(c));
+
             container.RegisterAsSingle(c => new MainMenuPopupService(
                 c.Resolve<ViewsFactory>(),
                 c.Resolve<ProjectPresentersFactory>(),

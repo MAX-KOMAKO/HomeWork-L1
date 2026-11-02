@@ -40,7 +40,6 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(c => new StatsService());
 
             container.RegisterAsSingle<ViewsFactory>(c => new ViewsFactory(c.Resolve<ResourcesAssetsLoader>()));
-            container.RegisterAsSingle(c => new ProjectPresentersFactory(c));
         }
 
         private static ResourcesAssetsLoader CreateResourcesAssetsLoader(DIContainer c) => new ResourcesAssetsLoader();
