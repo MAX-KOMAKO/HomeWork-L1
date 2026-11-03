@@ -60,8 +60,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Wallet
             if (CanSpend(_config.PenaltyForLoss) == false)
             {
                 Debug.LogWarning($"Недостаточно золота для штрафа. Штраф: {_config.PenaltyForLoss}, Баланс: {_currentGold}. Баланс обнулён.");
-                _currentGold = 0;
-                GoldChanged?.Invoke(_currentGold);
+                TrySpendGold(_currentGold);
                 return;
             }
 

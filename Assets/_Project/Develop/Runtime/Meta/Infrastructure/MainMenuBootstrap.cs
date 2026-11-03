@@ -37,5 +37,10 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             _mainMenuPresenter = presentersFactory.CreateMainMenuScreenPresenter(view);
             _mainMenuPresenter.Initialize();
         }
+
+        private void OnDestroy()
+        {
+            _mainMenuPresenter?.Dispose();
+        }
     }
 }

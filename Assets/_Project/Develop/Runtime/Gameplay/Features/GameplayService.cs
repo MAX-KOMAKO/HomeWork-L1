@@ -52,6 +52,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features
 
         private void ProcessInput(char character)
         {
+            if (_currentIndex >= _currentSequence.Length) return;
+
             char normalizedCharacter = char.ToLowerInvariant(character);
             char targetCharacter = char.ToLowerInvariant(_currentSequence[_currentIndex]);
 

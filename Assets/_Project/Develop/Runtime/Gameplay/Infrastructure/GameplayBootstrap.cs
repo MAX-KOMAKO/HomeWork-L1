@@ -27,6 +27,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private GameplayScreenPresenter _gameplayScreenPresenter;
         private GameModeConfig _currentConfig;
         private ControllersUpdateService _controllersUpdateService;
+        private GameEndService _gameEndService;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -62,6 +63,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             _gameplayService = _container.Resolve<GameplayService>();
             _controllersUpdateService = _container.Resolve<ControllersUpdateService>();
+            _gameEndService = _container.Resolve<GameEndService>();
+            
             yield break;
         }
 
@@ -84,6 +87,12 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private void Update()
         {
             _controllersUpdateService?.Update();
+        }
+
+        private void OnDestroy()
+        {
+            _gameplayScreenPresenter?.Dispose();
+            _gameEndService?.Dispose();
         }
     }
 }

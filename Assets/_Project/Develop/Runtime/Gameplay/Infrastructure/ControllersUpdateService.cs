@@ -19,9 +19,9 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         public void Update()
         {
-            foreach (Action updateAction in _updatables)
+            for (int i = _updatables.Count - 1; i >= 0; i--)
             {
-                updateAction?.Invoke();
+                _updatables[i]?.Invoke();
             }
         }
     }
