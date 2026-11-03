@@ -1,25 +1,25 @@
 using UnityEngine;
-using _Project.Develop.Runtime.Gameplay.Features;
+using _Project.Develop.Runtime.UI.Gameplay;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
     public class GameplayController : MonoBehaviour
     {
-        private GameEndService _gameEndService;
+        private GameplayScreenPresenter _presenter;
 
-        public void Initialize(GameEndService gameEndService)
+        public void Initialize(GameplayScreenPresenter presenter)
         {
-            _gameEndService = gameEndService;
+            _presenter = presenter;
         }
 
         private void Update()
         {
-            _gameEndService?.Update();
+            _presenter?.Update();
         }
 
         private void OnDestroy()
         {
-            _gameEndService?.Dispose();
+            _presenter?.Dispose();
         }
     }
 }

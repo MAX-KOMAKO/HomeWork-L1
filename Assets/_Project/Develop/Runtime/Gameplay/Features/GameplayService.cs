@@ -1,7 +1,6 @@
 using System;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
 using _Project.Develop.Runtime.Meta.Features.Input;
-using _Project.Develop.Utilities.Utilities;
 
 namespace _Project.Develop.Runtime.Gameplay.Features
 {
@@ -9,33 +8,30 @@ namespace _Project.Develop.Runtime.Gameplay.Features
     {
         public event Action Victory;
         public event Action Defeat;
+        public event Action<string, string> SequenceUpdated;
 
         private readonly IInputService _inputService;
-        private readonly IConsoleService _consoleService;
         private readonly SequenceGenerator _sequenceGenerator;
 
         private string _currentSequence;
+        private string _currentUserInput;
         private int _currentIndex;
-        
         private bool _isGameActive;
 
-        public GameplayService(
-            IInputService inputService,
-            IConsoleService consoleService,
-            SequenceGenerator sequenceGenerator)
+        public GameplayService(IInputService inputService, SequenceGenerator sequenceGenerator)
         {
             _inputService = inputService;
-            _consoleService = consoleService;
             _sequenceGenerator = sequenceGenerator;
         }
 
         public void StartGame(GameModeConfig config)
         {
             _currentSequence = _sequenceGenerator.Generate(config);
+            _currentUserInput = string.Empty;
             _currentIndex = 0;
             _isGameActive = true;
-            
-            _consoleService.Log($"Сгенерирована последовательность: {_currentSequence}");
+
+            SequenceUpdated?.Invoke(_currentSequence, _currentUserInput);
         }
 
         public void Update()
@@ -62,6 +58,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features
             if (normalizedCharacter == targetCharacter)
             {
                 _currentIndex++;
+                _currentUserInput += character;
+                SequenceUpdated?.Invoke(_currentSequence, _currentUserInput);
 
                 if (_currentIndex >= _currentSequence.Length)
                 {
@@ -72,6 +70,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features
             else
             {
                 _isGameActive = false;
+                _currentUserInput += character;
+                SequenceUpdated?.Invoke(_currentSequence, _currentUserInput);
                 Defeat?.Invoke();
             }
         }
