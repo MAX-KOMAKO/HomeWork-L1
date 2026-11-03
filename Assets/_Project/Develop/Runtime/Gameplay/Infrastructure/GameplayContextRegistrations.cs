@@ -38,6 +38,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             ));
 
             container.RegisterAsSingle(c => new ProjectPresentersFactory(c));
+            container.RegisterAsSingle(c => new ControllersUpdateService());
         }
     }
 }

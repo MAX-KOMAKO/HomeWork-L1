@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Features;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
@@ -25,6 +26,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private GameplayService _gameplayService;
         private GameplayScreenPresenter _gameplayScreenPresenter;
         private GameModeConfig _currentConfig;
+        private ControllersUpdateService _controllersUpdateService;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -32,7 +34,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             if (sceneArgs is not GameplayInputArgs gameplayInputArgs)
             {
-                throw new System.ArgumentException($"{nameof(sceneArgs)} is not match with {typeof(GameplayInputArgs)} type");
+                throw new ArgumentException($"{nameof(sceneArgs)} is not match with {typeof(GameplayInputArgs)} type");
             }
 
             _inputArgs = gameplayInputArgs;
@@ -55,10 +57,11 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             if (_currentConfig == null)
             {
-                throw new System.InvalidOperationException($"Config for mode {_inputArgs.Mode} not found in GameSettingsConfig.");
+                throw new InvalidOperationException($"Config for mode {_inputArgs.Mode} not found in GameSettingsConfig.");
             }
 
             _gameplayService = _container.Resolve<GameplayService>();
+            _controllersUpdateService = _container.Resolve<ControllersUpdateService>();
             yield break;
         }
 
@@ -74,9 +77,13 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             _gameplayService.StartGame(_currentConfig);
 
-            GameObject controllerObject = new GameObject("GameplayController");
-            GameplayController controller = controllerObject.AddComponent<GameplayController>();
-            controller.Initialize(_gameplayScreenPresenter);
+            Action updateAction = () => _gameplayScreenPresenter.Update();
+            _controllersUpdateService.Add(updateAction);
+        }
+
+        private void Update()
+        {
+            _controllersUpdateService?.Update();
         }
     }
 }

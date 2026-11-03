@@ -36,7 +36,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Wallet
             GoldChanged?.Invoke(_currentGold);
         }
 
-        public void SpendGold(int amount)
+        public bool TrySpendGold(int amount)
         {
             if (amount < 0)
             {
@@ -45,12 +45,12 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Wallet
 
             if (CanSpend(amount) == false)
             {
-                Debug.LogError($"Попытка списать {amount} золота, но на балансе только {_currentGold}.");
-                return;
+                return false;
             }
 
             _currentGold -= amount;
             GoldChanged?.Invoke(_currentGold);
+            return true;
         }
 
         public void RewardForWin() => AddGold(_config.RewardForWin);
@@ -65,7 +65,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Wallet
                 return;
             }
 
-            SpendGold(_config.PenaltyForLoss);
+            TrySpendGold(_config.PenaltyForLoss);
         }
 
         public void ResetToStart()

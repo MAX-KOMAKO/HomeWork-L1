@@ -53,11 +53,11 @@ namespace _Project.Develop.Runtime.Meta.Features
             if (_isLoading) return;
 
             int cost = _resetConfig.ResetCost;
-            
-            if (_walletService.CanSpend(cost))
+
+            if (_walletService.TrySpendGold(cost))
             {
                 _isLoading = true;
-                _coroutinesPerformer.StartPerform(ResetProgressProcess(cost));
+                _coroutinesPerformer.StartPerform(ResetProgressProcess());
             }
         }
 
@@ -71,9 +71,8 @@ namespace _Project.Develop.Runtime.Meta.Features
             return _resetConfig.ResetCost;
         }
 
-        private IEnumerator ResetProgressProcess(int cost)
+        private IEnumerator ResetProgressProcess()
         {
-            _walletService.SpendGold(cost);
             _statsService.ResetStats();
             
             yield return _playerDataProvider.SaveAsync();
