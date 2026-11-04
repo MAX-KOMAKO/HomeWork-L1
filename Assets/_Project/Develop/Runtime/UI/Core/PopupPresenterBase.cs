@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.UI.Core

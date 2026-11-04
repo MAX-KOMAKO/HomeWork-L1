@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
-using _Project.Develop.Runtime.Gameplay.Features.Save;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
+using _Project.Develop.Utilities.DataManagment;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Utilities.SceneManagement;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
 
 namespace _Project.Develop.Runtime.Meta.Features
 {
@@ -54,8 +54,9 @@ namespace _Project.Develop.Runtime.Meta.Features
 
             int cost = _resetConfig.ResetCost;
 
-            if (_walletService.TrySpendGold(cost))
+            if (_walletService.Enough(CurrencyTypes.Coins, cost))
             {
+                _walletService.Spend(CurrencyTypes.Coins, cost);
                 _isLoading = true;
                 _coroutinesPerformer.StartPerform(ResetProgressProcess());
             }
@@ -63,7 +64,7 @@ namespace _Project.Develop.Runtime.Meta.Features
 
         public bool CanResetProgress()
         {
-            return _walletService.CanSpend(_resetConfig.ResetCost);
+            return _walletService.Enough(CurrencyTypes.Coins, _resetConfig.ResetCost);
         }
 
         public int GetResetCost()

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Project.Develop.Runtime.UI.Core
 {
@@ -14,9 +14,16 @@ namespace _Project.Develop.Runtime.UI.Core
         
         [SerializeField] private float _animationDuration = 0.2f;
 
+        private Tween _currentTween;
+
         private void Awake()
         {
             _mainGroup.alpha = 0;
+        }
+
+        private void OnDestroy()
+        {
+            _currentTween?.Kill();
         }
 
         public void OnCloseButtonClicked() => CloseRequest?.Invoke();
@@ -26,14 +33,10 @@ namespace _Project.Develop.Runtime.UI.Core
             OnPreShow();
             _mainGroup.alpha = 1;
 
-            float elapsed = 0f;
-            while (elapsed < _animationDuration)
-            {
-                elapsed += Time.deltaTime;
-                _body.alpha = Mathf.Lerp(0f, 1f, elapsed / _animationDuration);
-                yield return null;
-            }
-            _body.alpha = 1f;
+            _currentTween?.Kill();
+            _currentTween = _body.DOFade(1f, _animationDuration).SetUpdate(true);
+            
+            yield return _currentTween.WaitForCompletion();
             
             OnPostShow();
         }
@@ -42,14 +45,11 @@ namespace _Project.Develop.Runtime.UI.Core
         {
             OnPreHide();
 
-            float elapsed = 0f;
-            while (elapsed < _animationDuration)
-            {
-                elapsed += Time.deltaTime;
-                _body.alpha = Mathf.Lerp(1f, 0f, elapsed / _animationDuration);
-                yield return null;
-            }
-            _body.alpha = 0f;
+            _currentTween?.Kill();
+            _currentTween = _body.DOFade(0f, _animationDuration).SetUpdate(true);
+            
+            yield return _currentTween.WaitForCompletion();
+            
             _mainGroup.alpha = 0f;
             
             OnPostHide();

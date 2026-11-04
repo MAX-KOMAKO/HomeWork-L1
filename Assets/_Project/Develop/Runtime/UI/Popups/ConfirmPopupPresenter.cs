@@ -1,7 +1,7 @@
 using System;
 using _Project.Develop.Runtime.Meta.Features;
 using _Project.Develop.Runtime.UI.Core;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
 
 namespace _Project.Develop.Runtime.UI.Popups
 {

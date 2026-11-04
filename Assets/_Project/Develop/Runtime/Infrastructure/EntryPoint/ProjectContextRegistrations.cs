@@ -1,14 +1,15 @@
-using _Project.Develop.Runtime.Gameplay.Features.Save;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
+using _Project.Develop.Utilities.DataManagment;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Input;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Utilities.ConfigsManagment;
 using _Project.Develop.Utilities.LoadingScreen;
-using _Project.Develop.Utilities.Save;
 using _Project.Develop.Utilities.SceneManagement;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
+using _Project.Develop.Utilities.AssetsManagment;
+using _Project.Develop.Utilities;
 using Object = UnityEngine.Object;
 
 namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
@@ -36,8 +37,8 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreateSaveLoadService);
             
             container.RegisterAsSingle(CreatePlayerDataProvider);
-            container.RegisterAsSingle(CreateWalletService);
-            container.RegisterAsSingle(c => new StatsService());
+            container.RegisterAsSingle(CreateWalletService).NonLazy();
+            container.RegisterAsSingle(c => new StatsService()).NonLazy();
 
             container.RegisterAsSingle<ViewsFactory>(c => new ViewsFactory(c.Resolve<ResourcesAssetsLoader>()));
         }

@@ -1,5 +1,5 @@
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Features.Configs

@@ -1,12 +1,12 @@
 using System.Collections;
-using _Project.Develop.Runtime.Gameplay.Features.Save;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Utilities.ConfigsManagment;
+using _Project.Develop.Utilities.DataManagment;
 using _Project.Develop.Utilities.LoadingScreen;
 using _Project.Develop.Utilities.SceneManagement;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
@@ -25,7 +25,6 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
 
             _projectContainer = new DIContainer();
             ProjectContextRegistrations.Process(_projectContainer);
-            _projectContainer.Initialize();
         }
 
         private IEnumerator Start()
@@ -35,6 +34,8 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
 
             ConfigsProviderService configsProvider = _projectContainer.Resolve<ConfigsProviderService>();
             yield return configsProvider.LoadAsync();
+
+            _projectContainer.Initialize();
 
             PlayerDataProvider playerDataProvider = _projectContainer.Resolve<PlayerDataProvider>();
             WalletService walletService = _projectContainer.Resolve<WalletService>();

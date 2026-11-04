@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
 using _Project.Develop.Runtime.Meta.Features;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.UI.Core;
 
 namespace _Project.Develop.Runtime.UI.MainMenu
@@ -13,6 +15,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
         private readonly StatsService _statsService;
         private readonly WalletService _walletService;
         private readonly MainMenuPopupService _popupService;
+        private readonly List<IDisposable> _subscriptions = new();
 
         public MainMenuScreenPresenter(
             MainMenuScreenView screen,
@@ -35,7 +38,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _screen.ResetButtonClicked += OnResetButtonClicked;
 
             _statsService.StatsChanged += OnStatsChanged;
-            _walletService.GoldChanged += OnGoldChanged;
+            _subscriptions.Add(_walletService.GetCurrency(CurrencyTypes.Coins).Subscribe(OnGoldChanged));
 
             UpdateStatsView();
             UpdateGoldView();
@@ -48,18 +51,15 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _screen.ResetButtonClicked -= OnResetButtonClicked;
 
             _statsService.StatsChanged -= OnStatsChanged;
-            _walletService.GoldChanged -= OnGoldChanged;
+            
+            foreach (IDisposable subscription in _subscriptions)
+                subscription.Dispose();
+                
+            _subscriptions.Clear();
         }
 
-        private void OnDigitsButtonClicked()
-        {
-            _mainMenuService.StartGame(GameModes.Digits);
-        }
-
-        private void OnLettersButtonClicked()
-        {
-            _mainMenuService.StartGame(GameModes.Letters);
-        }
+        private void OnDigitsButtonClicked() => _mainMenuService.StartGame(GameModes.Digits);
+        private void OnLettersButtonClicked() => _mainMenuService.StartGame(GameModes.Letters);
 
         private void OnResetButtonClicked()
         {
@@ -70,24 +70,10 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             }
         }
 
-        private void OnStatsChanged(int wins, int losses)
-        {
-            _screen.SetStats(wins, losses);
-        }
+        private void OnStatsChanged(int wins, int losses) => _screen.SetStats(wins, losses);
+        private void OnGoldChanged(int oldValue, int newValue) => _screen.SetGold(newValue);
 
-        private void OnGoldChanged(int gold)
-        {
-            _screen.SetGold(gold);
-        }
-
-        private void UpdateStatsView()
-        {
-            _screen.SetStats(_statsService.Wins, _statsService.Losses);
-        }
-
-        private void UpdateGoldView()
-        {
-            _screen.SetGold(_walletService.CurrentGold);
-        }
+        private void UpdateStatsView() => _screen.SetStats(_statsService.Wins, _statsService.Losses);
+        private void UpdateGoldView() => _screen.SetGold(_walletService.GetCurrency(CurrencyTypes.Coins).Value);
     }
 }

@@ -1,7 +1,7 @@
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Utilities.SceneManagement;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
 
 namespace _Project.Develop.Runtime.UI.Gameplay
 {

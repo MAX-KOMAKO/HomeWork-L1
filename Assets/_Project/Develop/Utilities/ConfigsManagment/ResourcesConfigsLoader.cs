@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
+using _Project.Develop.Utilities.AssetsManagment;
 
 namespace _Project.Develop.Utilities.ConfigsManagment
 {

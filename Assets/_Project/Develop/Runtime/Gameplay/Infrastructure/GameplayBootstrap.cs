@@ -2,16 +2,16 @@ using System;
 using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Features;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
-using _Project.Develop.Runtime.Gameplay.Features.Save;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.UI.Gameplay;
 using _Project.Develop.Utilities.ConfigsManagment;
+using _Project.Develop.Utilities.DataManagment;
 using _Project.Develop.Utilities.SceneManagement;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
@@ -28,6 +28,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private GameModeConfig _currentConfig;
         private ControllersUpdateService _controllersUpdateService;
         private GameEndService _gameEndService;
+        private GameplayViewController _gameplayViewController;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -82,11 +83,13 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             Action updateAction = () => _gameplayScreenPresenter.Update();
             _controllersUpdateService.Add(updateAction);
+
+            _gameplayViewController = new GameplayViewController(_controllersUpdateService);
         }
 
         private void Update()
         {
-            _controllersUpdateService?.Update();
+            _gameplayViewController?.Update();
         }
 
         private void OnDestroy()

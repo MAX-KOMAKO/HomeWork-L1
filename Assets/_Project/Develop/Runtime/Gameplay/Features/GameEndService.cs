@@ -1,8 +1,8 @@
 using System;
-using _Project.Develop.Runtime.Gameplay.Features.Save;
-using _Project.Develop.Runtime.Gameplay.Features.Stats;
-using _Project.Develop.Runtime.Gameplay.Features.Wallet;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.DataManagment;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
+using _Project.Develop.Utilities.CoroutinesManagment;
 
 namespace _Project.Develop.Runtime.Gameplay.Features
 {
@@ -29,14 +29,14 @@ namespace _Project.Develop.Runtime.Gameplay.Features
             _statsService = statsService;
             _playerDataProvider = playerDataProvider;
 
-            _gameplayService.Victory += OnVictory;
-            _gameplayService.Defeat += OnDefeat;
+            _gameplayService.Won += OnVictory;
+            _gameplayService.Lost += OnDefeat;
         }
 
         public void Dispose()
         {
-            _gameplayService.Victory -= OnVictory;
-            _gameplayService.Defeat -= OnDefeat;
+            _gameplayService.Won -= OnVictory;
+            _gameplayService.Lost -= OnDefeat;
         }
 
         private void OnVictory()

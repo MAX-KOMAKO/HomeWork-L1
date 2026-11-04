@@ -6,8 +6,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features
 {
     public class GameplayService
     {
-        public event Action Victory;
-        public event Action Defeat;
+        public event Action Won;
+        public event Action Lost;
         public event Action<string, string> SequenceUpdated;
 
         private readonly IInputService _inputService;
@@ -44,6 +44,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features
             {
                 foreach (char character in input)
                 {
+                    if (char.IsControl(character)) continue;
+
                     ProcessInput(character);
                     if (_isGameActive == false) break;
                 }
@@ -66,7 +68,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features
                 if (_currentIndex >= _currentSequence.Length)
                 {
                     _isGameActive = false;
-                    Victory?.Invoke();
+                    Won?.Invoke();
                 }
             }
             else
@@ -74,7 +76,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features
                 _isGameActive = false;
                 _currentUserInput += character;
                 SequenceUpdated?.Invoke(_currentSequence, _currentUserInput);
-                Defeat?.Invoke();
+                Lost?.Invoke();
             }
         }
     }
