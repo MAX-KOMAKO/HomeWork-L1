@@ -1,8 +1,8 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using _Project.Develop.Runtime.UI.Core;
+using _Project.Develop.Runtime.UI.CommonViews;
 
 namespace _Project.Develop.Runtime.UI.MainMenu
 {
@@ -12,9 +12,8 @@ namespace _Project.Develop.Runtime.UI.MainMenu
         public event Action LettersButtonClicked;
         public event Action ResetButtonClicked;
 
-        [SerializeField] private TMP_Text _winsText;
-        [SerializeField] private TMP_Text _lossesText;
-        [SerializeField] private TMP_Text _goldText;
+        [field: SerializeField] public StatsView StatsView { get; private set; }
+        [field: SerializeField] public WalletView WalletView { get; private set; }
 
         [SerializeField] private Button _digitsButton;
         [SerializeField] private Button _lettersButton;
@@ -32,17 +31,6 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _digitsButton.onClick.RemoveListener(OnDigitsClicked);
             _lettersButton.onClick.RemoveListener(OnLettersClicked);
             _resetButton.onClick.RemoveListener(OnResetClicked);
-        }
-
-        public void SetStats(int wins, int losses)
-        {
-            _winsText.text = $"Победы: {wins}";
-            _lossesText.text = $"Поражения: {losses}";
-        }
-
-        public void SetGold(int gold)
-        {
-            _goldText.text = $"Золото: {gold}";
         }
 
         private void OnDigitsClicked() => DigitsButtonClicked?.Invoke();

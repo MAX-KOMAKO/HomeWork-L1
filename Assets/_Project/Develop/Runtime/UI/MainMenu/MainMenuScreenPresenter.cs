@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
 using _Project.Develop.Runtime.Meta.Features;
-using _Project.Develop.Runtime.Meta.Features.Stats;
-using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.UI.Core;
+using _Project.Develop.Runtime.UI.CommonViews;
 
 namespace _Project.Develop.Runtime.UI.MainMenu
 {
@@ -12,23 +10,20 @@ namespace _Project.Develop.Runtime.UI.MainMenu
     {
         private readonly MainMenuScreenView _screen;
         private readonly MainMenuService _mainMenuService;
-        private readonly StatsService _statsService;
-        private readonly WalletService _walletService;
         private readonly MainMenuPopupService _popupService;
-        private readonly List<IDisposable> _subscriptions = new();
+        private readonly ProjectPresentersFactory _presentersFactory;
+        private readonly List<IPresenter> _childPresenters = new();
 
         public MainMenuScreenPresenter(
             MainMenuScreenView screen,
             MainMenuService mainMenuService,
-            StatsService statsService,
-            WalletService walletService,
-            MainMenuPopupService popupService)
+            MainMenuPopupService popupService,
+            ProjectPresentersFactory presentersFactory)
         {
             _screen = screen;
             _mainMenuService = mainMenuService;
-            _statsService = statsService;
-            _walletService = walletService;
             _popupService = popupService;
+            _presentersFactory = presentersFactory;
         }
 
         public void Initialize()
@@ -37,11 +32,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _screen.LettersButtonClicked += OnLettersButtonClicked;
             _screen.ResetButtonClicked += OnResetButtonClicked;
 
-            _statsService.StatsChanged += OnStatsChanged;
-            _subscriptions.Add(_walletService.GetCurrency(CurrencyTypes.Coins).Subscribe(OnGoldChanged));
-
-            UpdateStatsView();
-            UpdateGoldView();
+            CreateChildPresenters();
         }
 
         public void Dispose()
@@ -50,12 +41,26 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _screen.LettersButtonClicked -= OnLettersButtonClicked;
             _screen.ResetButtonClicked -= OnResetButtonClicked;
 
-            _statsService.StatsChanged -= OnStatsChanged;
-            
-            foreach (IDisposable subscription in _subscriptions)
-                subscription.Dispose();
-                
-            _subscriptions.Clear();
+            foreach (IPresenter presenter in _childPresenters)
+            {
+                presenter.Dispose();
+            }
+
+            _childPresenters.Clear();
+        }
+
+        private void CreateChildPresenters()
+        {
+            WalletPresenter walletPresenter = _presentersFactory.CreateWalletPresenter(_screen.WalletView);
+            StatsPresenter statsPresenter = _presentersFactory.CreateStatsPresenter(_screen.StatsView);
+
+            _childPresenters.Add(walletPresenter);
+            _childPresenters.Add(statsPresenter);
+
+            foreach (IPresenter presenter in _childPresenters)
+            {
+                presenter.Initialize();
+            }
         }
 
         private void OnDigitsButtonClicked() => _mainMenuService.StartGame(GameModes.Digits);
@@ -69,11 +74,5 @@ namespace _Project.Develop.Runtime.UI.MainMenu
                 _popupService.OpenConfirmPopup(message);
             }
         }
-
-        private void OnStatsChanged(int wins, int losses) => _screen.SetStats(wins, losses);
-        private void OnGoldChanged(int oldValue, int newValue) => _screen.SetGold(newValue);
-
-        private void UpdateStatsView() => _screen.SetStats(_statsService.Wins, _statsService.Losses);
-        private void UpdateGoldView() => _screen.SetGold(_walletService.GetCurrency(CurrencyTypes.Coins).Value);
     }
 }

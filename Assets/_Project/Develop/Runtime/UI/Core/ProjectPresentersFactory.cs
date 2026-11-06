@@ -7,6 +7,7 @@ using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.UI.Gameplay;
 using _Project.Develop.Runtime.UI.MainMenu;
 using _Project.Develop.Runtime.UI.Popups;
+using _Project.Develop.Runtime.UI.CommonViews;
 using _Project.Develop.Utilities.SceneManagement;
 using _Project.Develop.Utilities.CoroutinesManagment;
 
@@ -26,9 +27,8 @@ namespace _Project.Develop.Runtime.UI.Core
             return new MainMenuScreenPresenter(
                 view,
                 _container.Resolve<MainMenuService>(),
-                _container.Resolve<StatsService>(),
-                _container.Resolve<WalletService>(),
-                _container.Resolve<MainMenuPopupService>());
+                _container.Resolve<MainMenuPopupService>(),
+                this);
         }
 
         public ConfirmPopupPresenter CreateConfirmPopupPresenter(ConfirmPopupView view)
@@ -56,6 +56,20 @@ namespace _Project.Develop.Runtime.UI.Core
                 _container.Resolve<ICoroutinesPerformer>(),
                 _container.Resolve<IInputSceneArgs>(),
                 isVictory);
+        }
+
+        public WalletPresenter CreateWalletPresenter(WalletView view)
+        {
+            return new WalletPresenter(
+                view,
+                _container.Resolve<WalletService>());
+        }
+
+        public StatsPresenter CreateStatsPresenter(StatsView view)
+        {
+            return new StatsPresenter(
+                view,
+                _container.Resolve<StatsService>());
         }
     }
 }
