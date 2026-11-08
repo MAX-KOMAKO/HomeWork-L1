@@ -47,6 +47,7 @@ namespace _Project.Develop.Runtime.UI.Gameplay
 
         private void OnGameEnded(bool isVictory)
         {
+            _view.HideText();
             _popupService.OpenGameEndPopup(isVictory);
         }
     }

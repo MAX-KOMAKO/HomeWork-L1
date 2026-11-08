@@ -11,5 +11,11 @@ namespace _Project.Develop.Runtime.UI.Gameplay
 
         public void SetTargetSequence(string sequence) => _targetSequenceText.text = sequence;
         public void SetUserInput(string input) => _userInputText.text = input;
+
+        public void HideText()
+        {
+            _targetSequenceText.text = string.Empty;
+            _userInputText.text = string.Empty;
+        }
     }
 }
