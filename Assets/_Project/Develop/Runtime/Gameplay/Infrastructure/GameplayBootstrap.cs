@@ -1,26 +1,34 @@
+using System;
 using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Features;
 using _Project.Develop.Runtime.Gameplay.Features.Configs;
+using _Project.Develop.Runtime.Meta.Features.Stats;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Meta.Features.Input;
+using _Project.Develop.Runtime.UI.Core;
+using _Project.Develop.Runtime.UI.Gameplay;
 using _Project.Develop.Utilities.ConfigsManagment;
+using _Project.Develop.Utilities.DataManagment;
 using _Project.Develop.Utilities.SceneManagement;
-using _Project.Develop.Utilities.Utilities;
+using _Project.Develop.Utilities.CoroutinesManagment;
+using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
     public class GameplayBootstrap : SceneBootstrap
     {
+        [SerializeField] private Transform _uiRoot;
+        [SerializeField] private Transform _popupLayer;
+
         private DIContainer _container;
         private GameplayInputArgs _inputArgs;
         private GameplayService _gameplayService;
-        private SceneSwitcherService _sceneSwitcher;
-        private ICoroutinesPerformer _coroutinesPerformer;
-        private IInputService _inputService;
+        private GameplayScreenPresenter _gameplayScreenPresenter;
         private GameModeConfig _currentConfig;
-
+        private ControllersUpdateService _controllersUpdateService;
         private GameEndService _gameEndService;
+        private GameplayViewController _gameplayViewController;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -28,22 +36,18 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             if (sceneArgs is not GameplayInputArgs gameplayInputArgs)
             {
-                throw new System.ArgumentException($"{nameof(sceneArgs)} is not match with {typeof(GameplayInputArgs)} type");
+                throw new ArgumentException($"{nameof(sceneArgs)} is not match with {typeof(GameplayInputArgs)} type");
             }
 
             _inputArgs = gameplayInputArgs;
-            GameplayContextRegistrations.Process(_container, _inputArgs);
+            GameplayContextRegistrations.Process(_container, _inputArgs, _popupLayer);
         }
 
         public override IEnumerator Initialize()
         {
-            _sceneSwitcher = _container.Resolve<SceneSwitcherService>();
-            _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-            _inputService = _container.Resolve<IInputService>();
-            
             ConfigsProviderService configsProvider = _container.Resolve<ConfigsProviderService>();
             GameSettingsConfig settingsConfig = configsProvider.GetConfig<GameSettingsConfig>();
-            
+
             foreach (GameModeConfig config in settingsConfig.GameModes)
             {
                 if (config.Mode == _inputArgs.Mode)
@@ -55,34 +59,42 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             if (_currentConfig == null)
             {
-                throw new System.InvalidOperationException($"Config for mode {_inputArgs.Mode} not found in GameSettingsConfig.");
+                throw new InvalidOperationException($"Config for mode {_inputArgs.Mode} not found in GameSettingsConfig.");
             }
 
             _gameplayService = _container.Resolve<GameplayService>();
+            _controllersUpdateService = _container.Resolve<ControllersUpdateService>();
+            _gameEndService = _container.Resolve<GameEndService>();
             
             yield break;
         }
 
         public override void Run()
         {
-            _gameEndService = new GameEndService(
-                _gameplayService,
-                _inputService,
-                _sceneSwitcher,
-                _coroutinesPerformer,
-                _inputArgs
-            );
+            ViewsFactory viewsFactory = _container.Resolve<ViewsFactory>();
+            ProjectPresentersFactory presentersFactory = _container.Resolve<ProjectPresentersFactory>();
+
+            GameplayScreenView view = viewsFactory.Create<GameplayScreenView>(ViewIDs.GameplayScreen, _uiRoot);
+
+            _gameplayScreenPresenter = presentersFactory.CreateGameplayScreenPresenter(view);
+            _gameplayScreenPresenter.Initialize();
 
             _gameplayService.StartGame(_currentConfig);
+
+            Action updateAction = () => _gameplayScreenPresenter.Update();
+            _controllersUpdateService.Add(updateAction);
+
+            _gameplayViewController = new GameplayViewController(_controllersUpdateService);
         }
 
         private void Update()
         {
-            _gameEndService?.Update();
+            _gameplayViewController?.Update();
         }
 
         private void OnDestroy()
         {
+            _gameplayScreenPresenter?.Dispose();
             _gameEndService?.Dispose();
         }
     }
